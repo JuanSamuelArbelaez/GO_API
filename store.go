@@ -1,27 +1,27 @@
 package main
 
 import (
-    "fmt"
-    "github.com/JuanSamuelArbelaez/GO_API/model"
-    "github.com/JuanSamuelArbelaez/GO_API/services"
+	"fmt"
+	"github.com/JuanSamuelArbelaez/GO_API/model"
+	"github.com/JuanSamuelArbelaez/GO_API/services"
 )
 
 func main() {
-    var store = model.Store{make(map[string]model.Product)}
+	store := model.Store{Inventory: make(map[string]model.Product)}
 
-    mlk := &model.Product{"100", "Milk Carton", 2500, 98}
-    eg := &model.Product{"101", "Egg Carton", 7800, 75}
-    flr := &model.Product{"102", "Flour Bag", 3200, 63}
+	mlk := model.Product{ID: "100", Name: "Milk Carton", UnitValue: 2500, Units: 98}
+	eg := model.Product{ID: "101", Name: "Egg Carton", UnitValue: 7800, Units: 75}
+	flr := model.Product{ID: "102", Name: "Flour Bag", UnitValue: 3200, Units: 63}
 
-    services.addProduct(store, mlk)
-    services.addProduct(store, eg)
-    services.addProduct(store, flr)
+	services.AddProduct(store, mlk)
+	services.AddProduct(store, eg)
+	services.AddProduct(store, flr)
 
-    services.removeProduct(eg.ID)
+	services.RemoveProduct(store, eg.ID)
 
-    fmt.Println(services.getInventorySize(store))
+	fmt.Println(services.GetInventorySize(store))
 
-    fmt.Println(services.containsProduct(store, "100"))
+	fmt.Println(services.ContainsProduct(store, "100"))
 
-    fmt.Println(services.getProduct("100"))
+	fmt.Println(services.GetProduct(store, "100"))
 }

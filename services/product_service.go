@@ -5,15 +5,15 @@ import (
 	"github.com/JuanSamuelArbelaez/GO_API/model"
 )
 
-func checkProduct(product model.Product) (e error) {
-	if getProductID(product) == "" || getProductName(product) == "" || getProductUnitValue(product) <= 0 || getProductUnits(product) <= 0 {
-		return fmt.Errorf("Product is invalid")
+func CheckProduct(product model.Product) (e error) {
+	if GetProductID(product) == "" || GetProductName(product) == "" || GetProductUnitValue(product) <= 0 || GetProductUnits(product) <= 0 {
+		return fmt.Errorf("product is invalid")
 	} else {
 		return nil
 	}
 }
 
-func setProductID(product model.Product, ID string) (e error) {
+func SetProductID(product model.Product, ID string) (e error) {
 	if ID == "" {
 		return fmt.Errorf("must provide a ID")
 	}
@@ -21,11 +21,11 @@ func setProductID(product model.Product, ID string) (e error) {
 	return nil
 }
 
-func getProductID(product model.Product) (ID string) {
+func GetProductID(product model.Product) (ID string) {
 	return product.ID
 }
 
-func setProductName(product model.Product, name string) (e error) {
+func SetProductName(product model.Product, name string) (e error) {
 	if name == "" {
 		return fmt.Errorf("must provide a name")
 	}
@@ -33,11 +33,11 @@ func setProductName(product model.Product, name string) (e error) {
 	return nil
 }
 
-func getProductName(product model.Product) (name string) {
+func GetProductName(product model.Product) (name string) {
 	return product.Name
 }
 
-func setProductUnitValue(product model.Product, value float32) (e error) {
+func SetProductUnitValue(product model.Product, value float32) (e error) {
 	if value <= 0 {
 		return fmt.Errorf("value must be positive")
 	}
@@ -45,11 +45,11 @@ func setProductUnitValue(product model.Product, value float32) (e error) {
 	return nil
 }
 
-func getProductUnitValue(product model.Product) (unitValue float32) {
+func GetProductUnitValue(product model.Product) (unitValue float32) {
 	return product.UnitValue
 }
 
-func setProductUnits(product model.Product, units int) (e error) {
+func SetProductUnits(product model.Product, units int) (e error) {
 	if units <= 0 {
 		return fmt.Errorf("units must be positive")
 	}
@@ -57,6 +57,6 @@ func setProductUnits(product model.Product, units int) (e error) {
 	return nil
 }
 
-func getProductUnits(product model.Product) (units int) {
+func GetProductUnits(product model.Product) (units int) {
 	return product.Units
 }
