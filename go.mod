@@ -1,4 +1,4 @@
-module main
+module github.com/JuanSamuelArbelaez/GO_API
 
 go 1.21.6
 
