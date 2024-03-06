@@ -1,61 +1,62 @@
 package services
 
 import (
-    "module github.com/JuanSamuelArbelaez/GO_API/model"
+	"fmt"
+	"github.com/JuanSamuelArbelaez/GO_API/model"
 )
 
-func (p *Product) checkProduct() (e error) {
-    if p.getProductID() == "" || p.getProductName() == "" || p.getProductUnitValue() <= 0 || p.getProductUnits() <= 0 {
-        return fmt.Errorf("Product is invalid")
-    } else {
-        return nil
-    }
+func checkProduct(product model.Product) (e error) {
+	if getProductID(product) == "" || getProductName(product) == "" || getProductUnitValue(product) <= 0 || getProductUnits(product) <= 0 {
+		return fmt.Errorf("Product is invalid")
+	} else {
+		return nil
+	}
 }
 
-func (p *Product) setProductID(ID string) (e error){
-    if ID == "" {
-        return fmt.Errorf("must provide a ID")
-    }
-    p.ID = ID
-    return nil
+func setProductID(product model.Product, ID string) (e error) {
+	if ID == "" {
+		return fmt.Errorf("must provide a ID")
+	}
+	product.ID = ID
+	return nil
 }
 
-func (p *Product) getProductID() (ID string) {
-    return p.ID
+func getProductID(product model.Product) (ID string) {
+	return product.ID
 }
 
-func (p *Product) setProductName(name string) (e error){
-    if name == "" {
-        return fmt.Errorf("must provide a name")
-    }
-    p.Name = name
-    return nil
+func setProductName(product model.Product, name string) (e error) {
+	if name == "" {
+		return fmt.Errorf("must provide a name")
+	}
+	product.Name = name
+	return nil
 }
 
-func (p *Product) getProductName() (name string) {
-    return p.Name
+func getProductName(product model.Product) (name string) {
+	return product.Name
 }
 
-func (p *Product) setProductUnitValue(value float32) (e error) {
-    if value <= 0{
-        return fmt.Errorf("value must be positive")
-    }
-    p.UnitValue = value
-    return nil
+func setProductUnitValue(product model.Product, value float32) (e error) {
+	if value <= 0 {
+		return fmt.Errorf("value must be positive")
+	}
+	product.UnitValue = value
+	return nil
 }
 
-func (p *Product) getProductUnitValue() (unitValue float32) {
-    return p.UnitValue
+func getProductUnitValue(product model.Product) (unitValue float32) {
+	return product.UnitValue
 }
 
-func (p *Product) setProductUnits(units int) (e error){
-    if units <= 0 {
-        return fmt.Errorf("units must be positive")
-    }
-    p.Units = units
-    return nil
+func setProductUnits(product model.Product, units int) (e error) {
+	if units <= 0 {
+		return fmt.Errorf("units must be positive")
+	}
+	product.Units = units
+	return nil
 }
 
-func (p *Product) getProductUnits() (units int) {
-    return p.Units
+func getProductUnits(product model.Product) (units int) {
+	return product.Units
 }

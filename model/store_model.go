@@ -1,5 +1,5 @@
 package model
 
 type Store struct {
-    Inventory map[string]*Product
+    Inventory map[string]Product
 }

@@ -1,54 +1,55 @@
 package services
 
 import (
-    "module github.com/JuanSamuelArbelaez/GO_API/model"
+    "fmt"
+    "github.com/JuanSamuelArbelaez/GO_API/model"
 )
 
-func (s *Store) getInventory() (inventory map[string]*Product) {
-    return s.Inventory
+func getInventory(store model.Store) (inventory map[string]model.Product) {
+    return store.Inventory
 }
 
-func (s *Store) getInventorySize() (size int, e error) {
-    if e := s.checkInventory(); e != nil {
+func getInventorySize(store model.Store) (size int, e error) {
+    if e := checkInventory(store); e != nil {
         return -1, e
     } else {
-        return len(s.getInventory()), nil
+        return len(getInventory(store)), nil
     }
 }
 
-func (s *Store) addProduct(product *Product) (e error) {
-    if e:=product.checkProduct(); e != nil {
+func addProduct(store model.Store, product model.Product) (e error) {
+    if e:=checkProduct(product); e != nil {
         return e
     }
 
-    if contained, e := s.containsProduct(product.ID); e!=nil {
+    if contained, e := containsProduct(store, product.ID); e!=nil {
         return e
     } else if contained {
         return fmt.Errorf("Inventory already contains product '%s'", product.Name)
     } else {
-        s.getInventory()[product.ID] = product
+        getInventory(store)[product.ID] = product
         return nil
     }
 }
 
-func (s *Store) removeProduct(ID string) (e error) {
-    if contained, e := s.containsProduct(ID); e!=nil {
+func removeProduct(store model.Store, ID string) (e error) {
+    if contained, e := containsProduct(store, ID); e!=nil {
         return e
     } else if !contained {
         return fmt.Errorf("Product with ID:'%s' not found", ID)
     } else {
-        delete(s.getInventory(), ID)
+        delete(getInventory(store), ID)
         return nil
     }
 }
 
-func (s *Store) sellProduct(ID string, units int) (float32, error) {
-    er := s.checkInventory()
+func sellProduct(store model.Store, ID string, units int) (total float32, e error) {
+    er := checkInventory(store)
     if er != nil {
         return 0, er
     }
 
-    if p, e := s.getProduct(ID); e != nil {
+    if p, e := getProduct(store, ID); e != nil {
         return 0, e
     } else {
         if units <= 0 {
@@ -62,13 +63,13 @@ func (s *Store) sellProduct(ID string, units int) (float32, error) {
     }
 }
 
-func (s *Store) addProductUnits(ID string, units int) (e error) {
-    er := s.checkInventory()
+func addProductUnits(store model.Store, ID string, units int) (e error) {
+    er := checkInventory(store)
     if er != nil {
         return er
     }
 
-    if p, e := s.getProduct(ID); e != nil {
+    if p, e := getProduct(store, ID); e != nil {
         return e
     } else {
         p.Units += units
@@ -76,26 +77,26 @@ func (s *Store) addProductUnits(ID string, units int) (e error) {
     }
 }
 
-func (s *Store) checkInventory() (e error) {
-    if s.getInventory() == nil {
+func checkInventory(store model.Store) (e error) {
+    if getInventory(store) == nil {
         return fmt.Errorf("inventory is nil")
     } else {
         return nil
     }
 }
 
-func (s *Store) containsProduct(ID string) (isContained bool, e error) {
-    if e := s.checkInventory(); e != nil {
+func containsProduct(store model.Store, ID string) (isContained bool, e error) {
+    if e := checkInventory(store); e != nil {
         return false, e
     } else {
-        _, found := s.getInventory()[ID]
+        _, found := getInventory(store)[ID]
         return found, nil
     }
 }
 
-func (s *Store) getProduct(ID string) (product *Product, e error) {
-    if p, found := s.getInventory()[ID]; found {
+func getProduct(store model.Store, ID string) (product model.Product, e error) {
+    if p, found := getInventory(store)[ID]; found {
         return p, nil
     }
-    return nil, fmt.Errorf("Product not found")
+    return model.Product{}, fmt.Errorf("product not found")
 }

@@ -1,23 +1,27 @@
 package main
 
-import "fmt"
+import (
+    "fmt"
+    "github.com/JuanSamuelArbelaez/GO_API/model"
+    "github.com/JuanSamuelArbelaez/GO_API/services"
+)
 
 func main() {
-    var store = Store{make(map[string]*Product)}
+    var store = model.Store{make(map[string]model.Product)}
 
-    mlk := &Product{"100", "Milk Carton", 2500, 98}
-    eg := &Product{"101", "Egg Carton", 7800, 75}
-    flr := &Product{"102", "Flour Bag", 3200, 63}
+    mlk := &model.Product{"100", "Milk Carton", 2500, 98}
+    eg := &model.Product{"101", "Egg Carton", 7800, 75}
+    flr := &model.Product{"102", "Flour Bag", 3200, 63}
 
-    store.addProduct(mlk)
-    store.addProduct(eg)
-    store.addProduct(flr)
+    services.addProduct(store, mlk)
+    services.addProduct(store, eg)
+    services.addProduct(store, flr)
 
-    store.removeProduct(eg.ID)
+    services.removeProduct(eg.ID)
 
-    fmt.Println(store.getInventorySize())
+    fmt.Println(services.getInventorySize(store))
 
-    fmt.Println(store.containsProduct("100"))
+    fmt.Println(services.containsProduct(store, "100"))
 
-    fmt.Println(store.getProduct("100"))
+    fmt.Println(services.getProduct("100"))
 }
