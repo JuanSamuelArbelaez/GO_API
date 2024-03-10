@@ -21,8 +21,12 @@ func main() {
 		SQL.InsertDataSet()
 	}
 
-	router.HandleFunc("/GetProductDetails", controllers.GetProductDetails).Methods("GET")
-	//router.HandleFunc("/", controllers.SetProductName)
+	router.HandleFunc("/products/add", controllers.AddProduct).Methods("PUT")
+
+	router.HandleFunc("/products/get-details", controllers.GetProductDetails).Methods("GET")
+	router.HandleFunc("/products/get-all", controllers.GetAllProductDetails).Methods("GET")
+	router.HandleFunc("/products/count-all", controllers.CountProducts).Methods("GET")
+
 	port := ":8087"
 
 	servidor := &http.Server{
