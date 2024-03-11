@@ -47,7 +47,7 @@ func CountProducts(w http.ResponseWriter, r *http.Request) {
 func AddProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var newProduct model.Product
+	var newProduct model.ProductRequest
 	err := json.NewDecoder(r.Body).Decode(&newProduct)
 
 	if err != nil {
@@ -55,12 +55,12 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = services.AddProduct(newProduct)
+	id, err := services.AddProduct(newProduct)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode("Product added successfully")
+	json.NewEncoder(w).Encode(id)
 }

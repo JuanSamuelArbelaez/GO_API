@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"github.com/JuanSamuelArbelaez/GO_API/SQL"
+	"github.com/JuanSamuelArbelaez/GO_API/Utils"
 	"github.com/JuanSamuelArbelaez/GO_API/model"
 )
 
@@ -14,18 +15,23 @@ func GetInventorySize() (size int, e error) {
 	return SQL.CountProducts()
 }
 
-func AddProduct(product model.Product) (e error) {
-	if e := CheckProduct(product); e != nil {
-		return e
+func AddProduct(p model.ProductRequest) (id string, e error) {
+	e = CheckProduct(p)
+	if e != nil {
+		return "", e
 	}
 
-	if contained, e := ContainsProduct(product.ID); e != nil {
-		return e
-	} else if contained {
-		return fmt.Errorf("inventory already contains product '%s'", product.Name)
+	newId := ""
+	e = Utils.GenerateId(&newId)
+
+	if e != nil {
+		return "", e
 	} else {
-		SQL.InsertProduct(product)
-		return nil
+		newProduct := model.Product{}
+		newProduct.ID = newId
+		model.MapRequest(&newProduct, &p)
+		SQL.InsertProduct(newProduct)
+		return newId, nil
 	}
 }
 
@@ -43,7 +49,7 @@ func SellProduct(ID string, units int) (total float32, e error) {
 	if p, e := GetProduct(ID); e != nil {
 		return 0, e
 	} else {
-		if units > GetProductUnits(p) {
+		if units > p.Units {
 			return 0, fmt.Errorf("not enough units to sell (%d). currently available: %d", units, p.Units)
 		}
 		/*
@@ -67,7 +73,10 @@ func AddProductUnits(ID string, units int) (e error) {
 				return e
 			}
 		*/
-		CheckProduct(p)
+		err := CheckProduct(model.ProductRequest{Name: p.Name, UnitValue: p.UnitValue, Units: p.Units})
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 }
@@ -82,26 +91,10 @@ func GetProduct(ID string) (product model.Product, e error) {
 	return p, nil
 }
 
-func CheckProduct(product model.Product) (e error) {
-	if GetProductID(product) == "" || GetProductName(product) == "" || GetProductUnitValue(product) <= 0 || GetProductUnits(product) <= 0 {
+func CheckProduct(product model.ProductRequest) (e error) {
+	if product.Name == "" || product.UnitValue <= 0 || product.Units <= 0 {
 		return fmt.Errorf("product is invalid")
 	} else {
 		return nil
 	}
-}
-
-func GetProductID(product model.Product) (ID string) {
-	return product.ID
-}
-
-func GetProductName(product model.Product) (name string) {
-	return product.Name
-}
-
-func GetProductUnitValue(product model.Product) (unitValue float32) {
-	return product.UnitValue
-}
-
-func GetProductUnits(product model.Product) (units int) {
-	return product.Units
 }
