@@ -15,12 +15,6 @@ func main() {
 
 	SQL.InitDB()
 
-	if products, err := SQL.CountProducts(); err != nil {
-		fmt.Println(err)
-	} else if products <= 0 {
-		SQL.InsertDataSet()
-	}
-
 	router.HandleFunc("/products/add", controllers.AddProduct).Methods("PUT")
 
 	router.HandleFunc("/products/get-details", controllers.GetProductDetails).Methods("GET")
@@ -31,7 +25,7 @@ func main() {
 
 	servidor := &http.Server{
 		Handler:      router,
-		Addr:         port,
+		Addr:         "0.0.0.0" + port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

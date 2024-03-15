@@ -1,15 +1,16 @@
-package SQL
+package complementary
 
 import (
 	"errors"
 	"fmt"
+	"github.com/JuanSamuelArbelaez/GO_API/SQL"
 	"github.com/JuanSamuelArbelaez/GO_API/model"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 )
 
 func InsertProduct(p model.Product) {
-	_, err := DB.Exec("INSERT INTO product (ID, Name, UnitValue, Units) VALUES (?, ?, ?, ?)", p.ID, p.Name, p.UnitValue, p.Units)
+	_, err := SQL.DB.Exec("INSERT INTO product (ID, Name, UnitValue, Units) VALUES (?, ?, ?, ?)", p.ID, p.Name, p.UnitValue, p.Units)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -17,7 +18,7 @@ func InsertProduct(p model.Product) {
 }
 
 func UpdateProduct(p model.Product) {
-	_, err := DB.Exec("UPDATE product SET Name = ?, UnitValue = ?, Units = ? WHERE ID = ?", p.Name, p.UnitValue, p.Units, p.ID)
+	_, err := SQL.DB.Exec("UPDATE product SET Name = ?, UnitValue = ?, Units = ? WHERE ID = ?", p.Name, p.UnitValue, p.Units, p.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,7 +26,7 @@ func UpdateProduct(p model.Product) {
 }
 
 func DeleteProduct(ID string) {
-	_, err := DB.Exec("DELETE FROM product WHERE ID = ?", ID)
+	_, err := SQL.DB.Exec("DELETE FROM product WHERE ID = ?", ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +34,7 @@ func DeleteProduct(ID string) {
 }
 
 func SelectProductByID(ID string) (model.Product, error) {
-	rows, err := DB.Query("SELECT * FROM product WHERE ID = ?", ID)
+	rows, err := SQL.DB.Query("SELECT * FROM product WHERE ID = ?", ID)
 	if err != nil {
 		return model.Product{}, err
 	}
@@ -51,7 +52,7 @@ func SelectProductByID(ID string) (model.Product, error) {
 }
 
 func ContainsProductByID(ID string) (bool, error) {
-	rows, err := DB.Query("SELECT 1 FROM product WHERE ID = ?", ID)
+	rows, err := SQL.DB.Query("SELECT 1 FROM product WHERE ID = ?", ID)
 	if err != nil {
 		return false, err
 	}
@@ -68,7 +69,7 @@ func ContainsProductByID(ID string) (bool, error) {
 }
 
 func SelectAllProducts() ([]model.Product, error) {
-	rows, err := DB.Query("SELECT * FROM product")
+	rows, err := SQL.DB.Query("SELECT * FROM product")
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +91,7 @@ func SelectAllProducts() ([]model.Product, error) {
 
 func CountProducts() (int, error) {
 	var count int
-	err := DB.QueryRow("SELECT COUNT(*) FROM product").Scan(&count)
+	err := SQL.DB.QueryRow("SELECT COUNT(*) FROM product").Scan(&count)
 	if err != nil {
 		return 0, err
 	}

@@ -2,17 +2,17 @@ package services
 
 import (
 	"fmt"
-	"github.com/JuanSamuelArbelaez/GO_API/SQL"
 	"github.com/JuanSamuelArbelaez/GO_API/Utils"
 	"github.com/JuanSamuelArbelaez/GO_API/model"
+	"github.com/JuanSamuelArbelaez/GO_API/services/complementary"
 )
 
 func GetInventory() ([]model.Product, error) {
-	return SQL.SelectAllProducts()
+	return complementary.SelectAllProducts()
 }
 
 func GetInventorySize() (size int, e error) {
-	return SQL.CountProducts()
+	return complementary.CountProducts()
 }
 
 func AddProduct(p model.ProductRequest) (id string, e error) {
@@ -30,7 +30,7 @@ func AddProduct(p model.ProductRequest) (id string, e error) {
 		newProduct := model.Product{}
 		newProduct.ID = newId
 		model.MapRequest(&newProduct, &p)
-		SQL.InsertProduct(newProduct)
+		complementary.InsertProduct(newProduct)
 		return newId, nil
 	}
 }
@@ -82,11 +82,11 @@ func AddProductUnits(ID string, units int) (e error) {
 }
 
 func ContainsProduct(ID string) (isContained bool, e error) {
-	return SQL.ContainsProductByID(ID)
+	return complementary.ContainsProductByID(ID)
 }
 
 func GetProduct(ID string) (product model.Product, e error) {
-	p, _ := SQL.SelectProductByID(ID)
+	p, _ := complementary.SelectProductByID(ID)
 	fmt.Println(p)
 	return p, nil
 }

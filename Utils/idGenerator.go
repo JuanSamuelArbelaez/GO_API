@@ -2,12 +2,12 @@ package Utils
 
 import (
 	"fmt"
-	"github.com/JuanSamuelArbelaez/GO_API/SQL"
+	"github.com/JuanSamuelArbelaez/GO_API/services/complementary"
 	"strconv"
 )
 
 func GenerateId(id *string) error {
-	i, e := SQL.CountProducts()
+	i, e := complementary.CountProducts()
 	if e != nil {
 		return e
 	}
