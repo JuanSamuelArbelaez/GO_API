@@ -7,7 +7,7 @@ import (
 )
 
 func GenerateId(id *string) error {
-	i, e := complementary.CountPersons()
+	i, e := complementary.CountAllPersons()
 	if e != nil {
 		return e
 	}
