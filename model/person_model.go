@@ -7,6 +7,7 @@ type Person struct {
 	Email     string `json:"email"`
 	Telephone string `json:"telephone"`
 	Country   string `json:"country"`
+	State     string `json:"state"`
 }
 
 type PersonRequest struct {
