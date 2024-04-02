@@ -32,7 +32,7 @@ func AddProductUnits(ID string, units int) (e error) {
 				return e
 			}
 
-		err := CheckPerson(model.PersonRequest{Name: p.Name, UnitValue: p.UnitValue, Units: p.Units})
+		err := CheckPersonRequest(model.PersonRequest{Name: p.Name, UnitValue: p.UnitValue, Units: p.Units})
 		if err != nil {
 			return err
 		}
