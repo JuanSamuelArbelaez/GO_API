@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/JuanSamuelArbelaez/GO_API/SQL"
+	"github.com/JuanSamuelArbelaez/GO_API/Utils"
 	"github.com/JuanSamuelArbelaez/GO_API/controllers"
 	"github.com/gorilla/mux"
 	"log"
@@ -11,15 +12,17 @@ import (
 )
 
 func main() {
+	Utils.NotCountryCode("col")
+
 	router := mux.NewRouter()
 
 	SQL.InitDB()
 
-	router.HandleFunc("/products/add", controllers.AddProduct).Methods("PUT")
+	router.HandleFunc("/people/add", controllers.AddPerson).Methods("PUT")
 
-	router.HandleFunc("/products/get-details", controllers.GetProductDetails).Methods("GET")
-	router.HandleFunc("/products/get-all", controllers.GetAllProductDetails).Methods("GET")
-	router.HandleFunc("/products/count-all", controllers.CountProducts).Methods("GET")
+	router.HandleFunc("/people/get-details", controllers.GetPersonDetails).Methods("GET")
+	router.HandleFunc("/people/get-all", controllers.GetAllPersonsDetails).Methods("GET")
+	router.HandleFunc("/people/count-all", controllers.CountPersons).Methods("GET")
 
 	port := ":8087"
 

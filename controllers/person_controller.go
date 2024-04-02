@@ -8,35 +8,35 @@ import (
 	"net/http"
 )
 
-func GetProductDetails(w http.ResponseWriter, r *http.Request) {
+func GetPersonDetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	id := r.URL.Query().Get("ID")
 	fmt.Println(id)
-	pro, err := services.GetProduct(id)
+	person, err := services.GetPerson(id)
 	if err == nil {
-		json.NewEncoder(w).Encode(pro)
+		json.NewEncoder(w).Encode(person)
 		return
 	}
-	json.NewEncoder(w).Encode(model.Product{})
+	json.NewEncoder(w).Encode(model.Person{})
 
 }
 
-func GetAllProductDetails(w http.ResponseWriter, r *http.Request) {
+func GetAllPersonsDetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	inv, err := services.GetInventory()
+	inv, err := services.GetPeople()
 	if err == nil {
 		json.NewEncoder(w).Encode(inv)
 		return
 	}
-	json.NewEncoder(w).Encode([]model.Product{})
+	json.NewEncoder(w).Encode([]model.Person{})
 }
 
-func CountProducts(w http.ResponseWriter, r *http.Request) {
+func CountPersons(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	size, err := services.GetInventorySize()
+	size, err := services.GetNumberOfPeople()
 	if err == nil {
 		json.NewEncoder(w).Encode(size)
 		return
@@ -44,18 +44,18 @@ func CountProducts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(0)
 }
 
-func AddProduct(w http.ResponseWriter, r *http.Request) {
+func AddPerson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var newProduct model.ProductRequest
-	err := json.NewDecoder(r.Body).Decode(&newProduct)
+	var newPerson model.PersonRequest
+	err := json.NewDecoder(r.Body).Decode(&newPerson)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	id, err := services.AddProduct(newProduct)
+	id, err := services.AddPerson(newPerson)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
