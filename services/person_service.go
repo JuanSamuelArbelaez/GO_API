@@ -11,76 +11,138 @@ func GetPeople() ([]model.Person, error) {
 	return complementary.SelectAllPersons()
 }
 
-func GetNumberOfPeople() (size int, e error) {
-	return complementary.CountPersons()
+func GetNumberOfPeople() (size int, err error) {
+	return complementary.CountAllPersons()
 }
 
-func AddPerson(p model.PersonRequest) (id string, e error) {
-	e = CheckPerson(p)
-	if e != nil {
-		return "", e
+func AddPerson(p model.PersonRequest) (id string, err error) {
+	err = CheckPersonRequest(p)
+	if err != nil {
+		return "", err
 	}
 
 	newId := ""
-	e = Utils.GenerateId(&newId)
+	err = Utils.GenerateId(&newId)
 
-	if e != nil {
-		return "", e
+	if err != nil {
+		return "", err
 	} else {
 		newPerson := model.Person{}
 		newPerson.ID = newId
+		newPerson.State = "ACTIVE"
 		model.MapRequest(&newPerson, &p)
 		complementary.InsertPerson(newPerson)
 		return newId, nil
 	}
 }
 
-func RemovePerson(ID string) (e error) {
-	if contained, e := ContainsPerson(ID); e != nil {
-		return e
-	} else if !contained {
-		return fmt.Errorf("person with ID:'%s' not found", ID)
-	} else {
-		return nil
+func UpdatePerson(p model.Person) (err error) {
+	exists, err := complementary.PersonByIDExists(p.ID)
+	if err != nil {
+		return err
 	}
+
+	if !exists {
+		return fmt.Errorf("person not found")
+	}
+
+	active, err := complementary.UserIsActive(p.ID)
+	if err != nil {
+		return err
+	} else if !active {
+		return fmt.Errorf("user is not active")
+	}
+
+	err = CheckPerson(p)
+	if err != nil {
+		return err
+	}
+
+	complementary.UpdatePerson(p)
+	return nil
 }
 
-func ContainsPerson(ID string) (isContained bool, e error) {
-	return complementary.ContainsPersonByID(ID)
+func RemovePerson(ID string) (state string, err error) {
+	exists, err := complementary.PersonByIDExists(ID)
+	if err != nil {
+		return "", err
+	}
+
+	if !exists {
+		return "", fmt.Errorf("person not found")
+	}
+
+	active, err := complementary.UserIsActive(ID)
+	if err != nil {
+		return "", err
+	} else if !active {
+		return "", fmt.Errorf("user already inactive")
+	} else {
+		complementary.DeletePerson(ID)
+	}
+
+	return complementary.GetUserState(ID)
 }
 
-func GetPerson(ID string) (product model.Person, e error) {
+func RecoverPerson(ID string) (state string, err error) {
+	exists, err := complementary.PersonByIDExists(ID)
+	if err != nil {
+		return "", err
+	}
+
+	if !exists {
+		return "", fmt.Errorf("person not found")
+	}
+
+	active, err := complementary.UserIsActive(ID)
+	if err != nil {
+		return "", err
+	} else if active {
+		return "", fmt.Errorf("user already active")
+	} else {
+		complementary.RecoverPerson(ID)
+	}
+
+	return complementary.GetUserState(ID)
+}
+
+func GetPerson(ID string) (product model.Person, err error) {
 	p, _ := complementary.SelectPersonByID(ID)
 	fmt.Println(p)
 	return p, nil
 }
 
-func CheckPerson(person model.PersonRequest) (e error) {
+func CheckPersonRequest(person model.PersonRequest) (err error) {
+	var p model.Person
+	model.MapRequest(&p, &person)
+	p.ID = ""
+	return CheckPerson(p)
+}
+
+func CheckPerson(person model.Person) (err error) {
 	errorMsg := ""
-	errorOccurred := false
 
 	if Utils.EmptyString(person.Name) {
-		errorOccurred = true
 		errorMsg += "Invalid person name. "
 	}
 	if Utils.EmptyString(person.LastName) {
-		errorOccurred = true
 		errorMsg += "Invalid person last name. "
 	}
 	if Utils.NotEmailString(person.Email) {
-		errorOccurred = true
 		errorMsg += "Invalid person email. "
 	}
+	if exists, err := complementary.PersonByEmailExists(person.ID, person.Email); err != nil {
+		errorMsg += fmt.Sprint(err) + " "
+	} else if exists {
+		errorMsg += "Email already in use. "
+	}
 	if Utils.EmptyString(person.Telephone) {
-		errorOccurred = true
 		errorMsg += "Invalid person telephone. "
 	}
-	if Utils.NotCountryCode(person.Country) {
-		errorOccurred = true
+	if NotCountryCode(person.Country) {
 		errorMsg += "Invalid country code. "
 	}
-
-	if errorOccurred {
+	if errorMsg != "" {
 		return fmt.Errorf(errorMsg)
 	}
 	return nil
