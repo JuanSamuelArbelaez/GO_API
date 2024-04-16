@@ -2,6 +2,7 @@ package complementary
 
 import (
 	"errors"
+	"fmt"
 	"github.com/JuanSamuelArbelaez/GO_API/SQL"
 	"github.com/JuanSamuelArbelaez/GO_API/model"
 	_ "github.com/go-sql-driver/mysql"
@@ -44,6 +45,8 @@ func SelectPersonByID(ID string) (p model.Person, e error) {
 	rows, err := SQL.DB.Query("SELECT * FROM people WHERE ID = ?", ID)
 	if err != nil {
 		return model.Person{}, err
+	} else {
+		fmt.Println(err)
 	}
 	defer rows.Close()
 
@@ -54,7 +57,7 @@ func SelectPersonByID(ID string) (p model.Person, e error) {
 	if err := rows.Scan(&person.ID, &person.Name, &person.LastName, &person.Email, &person.Telephone, &person.Country, &person.State); err != nil {
 		return model.Person{}, err
 	}
-	return person, nil
+	return person, err
 }
 
 func PersonByIDExists(ID string) (bool, error) {

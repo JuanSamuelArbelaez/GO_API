@@ -27,6 +27,11 @@ func InitDB() {
 		log.Fatal(err)
 	}
 	DB = db
+	err = DB.Ping()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 //func InsertDataSet() {

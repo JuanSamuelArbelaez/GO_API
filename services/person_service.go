@@ -107,9 +107,7 @@ func RecoverPerson(ID string) (state string, err error) {
 }
 
 func GetPerson(ID string) (product model.Person, err error) {
-	p, _ := complementary.SelectPersonByID(ID)
-	fmt.Println(p)
-	return p, nil
+	return complementary.SelectPersonByID(ID)
 }
 
 func CheckPersonRequest(person model.PersonRequest) (err error) {

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/JuanSamuelArbelaez/GO_API/model"
 	"github.com/JuanSamuelArbelaez/GO_API/services"
 	"net/http"
@@ -13,12 +14,13 @@ func GetPersonDetails(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("ID")
 	person, err := services.GetPerson(id)
 	if err == nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusAccepted)
 		json.NewEncoder(w).Encode(person)
 		return
 	}
-	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(model.Person{})
+	fmt.Println(err)
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(err)
 
 }
 

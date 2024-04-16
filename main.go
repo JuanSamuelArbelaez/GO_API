@@ -23,7 +23,7 @@ func main() {
 	router.HandleFunc("/people/recover", controllers.RecoverPerson).Methods("POST")
 	router.HandleFunc("/people/update", controllers.UpdatePerson).Methods("POST")
 
-	port := ":8087"
+	port := ":8088"
 
 	server := &http.Server{
 		Handler:      router,
