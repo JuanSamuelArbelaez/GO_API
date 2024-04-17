@@ -12,49 +12,59 @@ func GetPersonDetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	id := r.URL.Query().Get("ID")
+
 	person, err := services.GetPerson(id)
-	if err == nil {
-		w.WriteHeader(http.StatusAccepted)
-		json.NewEncoder(w).Encode(person)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
-	fmt.Println(err)
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(err)
 
+	w.WriteHeader(http.StatusAccepted)
+	if err = json.NewEncoder(w).Encode(person); err != nil {
+		return
+	}
 }
 
 func GetAllPersonsDetails(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	inv, err := services.GetPeople()
-	if err == nil {
-		json.NewEncoder(w).Encode(inv)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode([]model.Person{})
 		return
 	}
+
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode([]model.Person{})
+	if err = json.NewEncoder(w).Encode(inv); err != nil {
+		return
+	}
 }
 
 func CountPersons(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	size, err := services.GetNumberOfPeople()
-	if err == nil {
-		json.NewEncoder(w).Encode(size)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(0)
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(0)
+	if err = json.NewEncoder(w).Encode(size); err != nil {
+		return
+	}
 }
 
 func AddPerson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var newPerson model.PersonRequest
-	err := json.NewDecoder(r.Body).Decode(&newPerson)
 
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&newPerson); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -66,7 +76,9 @@ func AddPerson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(id)
+	if err = json.NewEncoder(w).Encode(id); err != nil {
+		return
+	}
 }
 
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
@@ -79,8 +91,11 @@ func DeletePerson(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(state)
+	if err = json.NewEncoder(w).Encode(state); err != nil {
+		return
+	}
 }
 
 func RecoverPerson(w http.ResponseWriter, r *http.Request) {
@@ -93,8 +108,11 @@ func RecoverPerson(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(state)
+	if err = json.NewEncoder(w).Encode(state); err != nil {
+		return
+	}
 }
 
 func UpdatePerson(w http.ResponseWriter, r *http.Request) {
@@ -112,6 +130,9 @@ func UpdatePerson(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(person)
+	if err = json.NewEncoder(w).Encode(person); err != nil {
+		return
+	}
 }
